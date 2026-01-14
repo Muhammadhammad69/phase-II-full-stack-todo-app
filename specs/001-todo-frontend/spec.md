@@ -27,7 +27,7 @@ Tech Stack (Frontend Only):
 - Next.js 16+ with App Router
 - React Server Components where applicable
 - Client Components for interactive UI
-- CSS Modules or Tailwind CSS (decide based on agent recommendation)
+- CSS Modules for component-scoped styling with theme-factory integration
 - No backend, no API calls (use mock/local state only)
 
 Core Features – Basic Level (MVP Frontend):
@@ -62,12 +62,12 @@ Intermediate Features – Organization & Usability (Frontend Only):
      - Creation order (simulated)
 
 UI / UX Requirements:
-- Clean, modern, and minimal UI
+- Clean, modern, and minimal UI using Tech Innovation theme (electric blue #0066ff primary, neon cyan #00ffff highlights, dark gray #1e1e1e backgrounds)
 - Fully responsive (desktop, tablet, mobile)
-- Clear visual hierarchy using theme-factory
-- Accessible components (proper labels, focus states)
-- Smooth UI interactions (hover, active, transitions)
-- Empty states and basic user feedback (e.g., "No tasks found")
+- Clear visual hierarchy using Tech Innovation theme tokens with DejaVu Sans typography
+- Accessible components (proper labels, focus states, ARIA attributes)
+- Smooth UI interactions (hover, active, transitions) with Tech Innovation color scheme
+- Empty states and basic user feedback (e.g., "No tasks found") styled with theme colors
 
 Architecture Requirements:
 - Use App Router (`app/` directory)
@@ -87,11 +87,11 @@ Out of Scope (Explicitly Excluded):
 - Server-side auth logic
 
 Deliverables:
-- Complete frontend specification
-- Clear component breakdown
-- UI state flow for all features
-- Theme definition using theme-factory
-- Design rationale using frontend-design principles"
+- Complete frontend specification with backend-alignment considerations
+- Clear component breakdown (container vs presentational, client vs server components)
+- UI state flow for all features with Tech Innovation theme implementation
+- Theme definition using Tech Innovation theme from theme-factory
+- Design rationale using frontend-design principles with CSS Modules approach"
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -173,9 +173,10 @@ As a user, I want to search, filter, and sort my tasks so that I can quickly fin
 
 ### Key Entities
 
-- **Task**: Represents a todo item with properties: title (required), description (optional), completion status, priority level (High/Medium/Low), and category/tags
+- **Task**: Represents a todo item with properties: id (UUID), title (required), description (optional), completion status (boolean), priority level (High/Medium/Low), due_date (optional), completed_at (optional), created_at, updated_at, user_email (foreign key). Aligns with backend Task model from FastAPI implementation.
 - **Category**: Represents a grouping mechanism for tasks (e.g., Work, Personal, Shopping) with a name and optional color/style
-- **Priority**: Represents urgency level of tasks with three values: High, Medium, Low, each with associated visual styling
+- **Priority**: Represents urgency level of tasks with three values: High, Medium, Low, each with associated visual styling using Tech Innovation theme tokens
+- **User**: Represents the authenticated user with email and username (backend context for future auth integration)
 
 ## Success Criteria *(mandatory)*
 
@@ -189,3 +190,15 @@ As a user, I want to search, filter, and sort my tasks so that I can quickly fin
 - **SC-006**: Search and filter functions return results within 1 second for typical usage scenarios
 - **SC-007**: The application maintains consistent visual design using a coherent theme system across all components
 - **SC-008**: All UI interactions provide appropriate visual feedback (hover, active, focus states) for enhanced user experience
+
+## Clarifications
+
+### Session 2026-01-14
+
+- Q: What specific styling approach should be used for the Next.js application? → A: CSS Modules for component-scoped styling with theme-factory integration
+- Q: Which theme should be applied to the application? → A: Tech Innovation theme (electric blue #0066ff primary, neon cyan #00ffff highlights, dark gray #1e1e1e backgrounds)
+- Q: How should filters, sorting, and search interact together? → A: Search operates independently, filters narrow the dataset, sorting arranges the filtered results
+- Q: How are empty states handled? → A: Display friendly empty state messages with optional call-to-action buttons
+- Q: What is the component responsibility structure? → A: Container components manage state/logic, presentational components handle UI rendering
+- Q: Which components are client vs server components? → A: Interactive components (forms, modals, toggles) are client components; static UI can be server components
+- Q: What is the routing strategy? → A: Single-page dashboard using App Router with logical nested routes
