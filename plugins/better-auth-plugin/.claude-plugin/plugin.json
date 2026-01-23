@@ -1,0 +1,20 @@
+{
+  "name": "better-auth-plugin",
+  "version": "1.0.0",
+  "description": "Automate Better-Auth authentication setup, configuration, and management. Help developers quickly set up OAuth providers, manage users, follow security best practices, and resolve common authentication issues.",
+  "author": {
+    "name": "Better-Auth Plugin Developer",
+    "email": "developer@example.com"
+  },
+  "homepage": "https://github.com/better-auth-plugin",
+  "repository": "https://github.com/better-auth-plugin/better-auth-plugin",
+  "license": "MIT",
+  "keywords": [
+    "authentication",
+    "authorization",
+    "oauth",
+    "security",
+    "better-auth",
+    "fullstack"
+  ]
+}

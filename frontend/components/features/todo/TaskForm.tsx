@@ -4,6 +4,8 @@ import { useTasks } from './TasksContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { VALIDATION_RULES } from '@/types';
 import styles from './TaskForm.module.css';
 
@@ -118,20 +120,20 @@ const TaskForm = ({ onSubmit, onCancel, initialTask, isEditing = false }: TaskFo
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="description">Description</label>
-        <textarea
+        <Label htmlFor="description">Description</Label>
+        <Textarea
           id="description"
           name="description"
           value={formData.description}
           onChange={handleChange}
           placeholder="Enter task description (optional)"
-          className={`${styles.textarea} ${errors.description ? styles.error : ''}`}
+          className={`${errors.description ? styles.error : ''}`}
         />
         {errors.description && <div className={styles.errorText}>{errors.description}</div>}
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="priority">Priority</label>
+        <Label htmlFor="priority">Priority</Label>
         <Select value={formData.priority} onValueChange={(value: Priority) => setFormData(prev => ({...prev, priority: value}))}>
           <SelectTrigger id="priority" className={styles.select}>
             <SelectValue placeholder="Select priority" />

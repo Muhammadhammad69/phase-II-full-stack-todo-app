@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
       <div className={styles.profileContent}>
         <Card className={styles.profileCard}>
-          <div className="p-6">
+          <div className="p-8">
             <div className={styles.avatarSection}>
               <div className={styles.avatar}>
                 {userData.name.charAt(0)}
@@ -98,48 +98,48 @@ export default function ProfilePage() {
               </div>
             </div>
 
-          <div className={styles.profileActions}>
-            <Button
-              variant={isEditing ? "secondary" : "default"}
-              onClick={handleEditToggle}
-              className={styles.editButton}
-            >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
-            </Button>
-            {isEditing && (
+            <div className={styles.profileActions}>
               <Button
-                variant="default"
-                onClick={handleSave}
-                className={styles.saveButton}
+                variant={isEditing ? "secondary" : "default"}
+                onClick={handleEditToggle}
+                className={styles.editButton}
               >
-                Save Changes
+                {isEditing ? 'Cancel' : 'Edit Profile'}
               </Button>
-            )}
+              {isEditing && (
+                <Button
+                  variant="default"
+                  onClick={handleSave}
+                  className={styles.saveButton}
+                >
+                  Save Changes
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
 
         <div className={styles.profileStats}>
           <Card className={styles.statCard}>
-            <div className="p-6">
+            <div className="p-8">
               <h3 className={styles.statTitle}>Account Since</h3>
               <p className={styles.statValue}>{userData.joinDate}</p>
             </div>
           </Card>
           <Card className={styles.statCard}>
-            <div className="p-6">
+            <div className="p-8">
               <h3 className={styles.statTitle}>Total Tasks</h3>
               <p className={styles.statValue}>{userData.taskCount}</p>
             </div>
           </Card>
           <Card className={styles.statCard}>
-            <div className="p-6">
+            <div className="p-8">
               <h3 className={styles.statTitle}>Completed</h3>
               <p className={styles.statValue}>{userData.completedTasks}</p>
             </div>
           </Card>
           <Card className={styles.statCard}>
-            <div className="p-6">
+            <div className="p-8">
               <h3 className={styles.statTitle}>Day Streak</h3>
               <p className={styles.statValue}>{userData.streak}</p>
             </div>
@@ -147,7 +147,7 @@ export default function ProfilePage() {
         </div>
 
         <Card className={styles.profileDetails}>
-          <div className="p-6">
+          <div className="p-8">
             <h3 className={styles.detailsTitle}>Account Information</h3>
             <div className={styles.detailsGrid}>
               <div className={styles.detailItem}>
@@ -191,7 +191,7 @@ export default function ProfilePage() {
         </Card>
 
         <Card className={styles.securitySection}>
-          <div className="p-6">
+          <div className="p-8">
             <h3 className={styles.sectionTitle}>Security</h3>
             <div className={styles.securityOptions}>
               <div className={styles.securityOption}>

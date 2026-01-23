@@ -164,7 +164,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <AnimatedBackground />
 
       {/* Subtle particle effect */}
@@ -207,19 +207,19 @@ export default function HomePage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight tracking-tight">
-                  <span className="bg-linear-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
                     Tech Innovation
                   </span>
                   <br />
                   <span className="text-white">Todo</span>
                 </h1>
-                <div className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                <div className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center animate-pulse">
                   <span className="text-white text-xl sm:text-2xl">⚡</span>
                 </div>
               </motion.div>
 
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed px-4 "
+                className="text-lg sm:text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed px-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -231,57 +231,23 @@ export default function HomePage() {
             </div>
 
             {/* Stats Section */}
-            {/* <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <div className="text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2 sm:mb-3">10K+</div>
-                <div className="text-slate-300 text-base sm:text-lg">Active Users</div>
-              </div>
-              <div className="text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2 sm:mb-3">500K+</div>
-                <div className="text-slate-300 text-base sm:text-lg">Tasks Completed</div>
-              </div>
-              <div className="text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2 sm:mb-3">99.9%</div>
-                <div className="text-slate-300 text-base sm:text-lg">Uptime</div>
-              </div>
-            </motion.div> */}
-
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl place-items-center "
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <div className="w-48 h-48 md:w-56 md:h-56 flex flex-col items-center justify-center text-center bg-slate-800/40 backdrop-blur-sm rounded-full border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-                  10K+
-                </div>
-                <div className="text-slate-300 text-sm sm:text-base">
-                  Active Users
-                </div>
+              <div className="flex flex-col items-center text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
+                <div className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-3">10K+</div>
+                <div className="text-slate-300 text-lg sm:text-xl">Active Users</div>
               </div>
-
-              <div className="w-48 h-48 md:w-56 md:h-56 flex flex-col items-center justify-center text-center bg-slate-800/40 backdrop-blur-sm rounded-full border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-                  500K+
-                </div>
-                <div className="text-slate-300 text-sm sm:text-base">
-                  Tasks Completed
-                </div>
+              <div className="flex flex-col items-center text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
+                <div className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-3">500K+</div>
+                <div className="text-slate-300 text-lg sm:text-xl">Tasks Completed</div>
               </div>
-
-              <div className="w-48 h-48 md:w-56 md:h-56 flex flex-col items-center justify-center text-center bg-slate-800/40 backdrop-blur-sm rounded-full border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-                  99.9%
-                </div>
-                <div className="text-slate-300 text-sm sm:text-base">
-                  Uptime
-                </div>
+              <div className="flex flex-col items-center text-center p-6 md:p-8 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/40 hover:border-cyan-500/30 transition-colors duration-300">
+                <div className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-3">99.9%</div>
+                <div className="text-slate-300 text-lg sm:text-xl">Uptime</div>
               </div>
             </motion.div>
 
@@ -314,7 +280,7 @@ export default function HomePage() {
 
             {/* CTA Section - with proper separation */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-8 md:gap-12 "
+              className="flex flex-col sm:flex-row gap-8 md:gap-12"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.2 }}
@@ -323,7 +289,7 @@ export default function HomePage() {
                 <Button
                   variant="default"
                   size="lg"
-                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-linear-to-r gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60"
+                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60"
                 >
                   Sign In to Your Account
                 </Button>
@@ -343,7 +309,7 @@ export default function HomePage() {
       </div>
 
       {/* Bottom gradient overlay */}
-      <div className="absolute bottom-0 left-0 w-full h-40 bg-linear-to-t from-slate-900/90 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-slate-900/90 to-transparent pointer-events-none"></div>
     </div>
   );
 }

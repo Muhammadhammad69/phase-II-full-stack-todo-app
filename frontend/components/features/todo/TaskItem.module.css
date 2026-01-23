@@ -4,6 +4,7 @@
   gap: var(--spacing-sm);
   width: 100%;
   transition: opacity 0.2s ease;
+  padding: 1rem;
 }
 
 .taskItem.completed {

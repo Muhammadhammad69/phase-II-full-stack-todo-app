@@ -20,31 +20,29 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[--color-background] to-[--color-surface] p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[--color-background] to-[--color-surface] p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Dashboard Header */}
         <div className="text-center mb-10 md:mb-12 relative overflow-hidden">
-          {/* <div className="absolute inset-0 bg-linear-to-r from-[--color-primary]/20 to-[--color-secondary]/20 -rotate-6 transform scale-125 rounded-2xl"></div> */}
           <div className="relative z-10 p-1">
-            <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-[--color-primary] to-[--color-secondary] bg-clip-text mb-4">
-         Dashboard
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[--color-primary] to-[--color-secondary] bg-clip-text mb-4">
+              Dashboard
             </h1>
             <p className="text-lg text-[--color-text-primary] max-w-2xl mx-auto">
               Welcome back, <span className="font-semibold text-[--color-primary]">{userEmail || 'User'}</span>! Here's your personalized workspace.
             </p>
-            <p className="text-sm font-medium text-[--color-primary] mb-1 from-[--color-status-success]/15 to-[--color-status-success]/15">Total Tasks</p>
           </div>
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <Card className="bg-linear-to-br from-[--color-primary]/15 to-[--color-secondary]/15 shadow-xl border border-[--color-primary]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-primary] to-[--color-secondary]"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <Card className="bg-gradient-to-br from-[--color-primary]/15 to-[--color-secondary]/15 shadow-xl border border-[--color-primary]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-primary] to-[--color-secondary]"></div>
             <CardContent className="p-6 pt-8 relative">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[--color-primary] mb-1">Total Tasks</p>
-                  <p className="text-3xl font-bold text-[--color-primary]">12</p>
+                  <p className="text-sm font-medium text-[--color-primary] mb-2">Total Tasks</p>
+                  <p className="text-4xl font-bold text-[--color-primary]">12</p>
                 </div>
                 <div className="bg-white/90 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <svg
@@ -66,13 +64,13 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-linear-to-br from-[--color-status-success]/15 to-[--color-status-success]/15 shadow-xl border border-[--color-status-success]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-status-success] to-[--color-status-success]/70"></div>
+          <Card className="bg-gradient-to-br from-[--color-status-success]/15 to-[--color-status-success]/15 shadow-xl border border-[--color-status-success]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-status-success] to-[--color-status-success]/70"></div>
             <CardContent className="p-6 pt-8 relative">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[--color-status-success] mb-1">Completed</p>
-                  <p className="text-3xl font-bold text-[--color-status-success]">7</p>
+                  <p className="text-sm font-medium text-[--color-status-success] mb-2">Completed</p>
+                  <p className="text-4xl font-bold text-[--color-status-success]">7</p>
                 </div>
                 <div className="bg-white/90 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <svg
@@ -94,13 +92,13 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-linear-to-br from-[--color-status-warning]/15 to-[--color-status-warning]/15 shadow-xl border border-[--color-status-warning]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-status-warning] to-[--color-status-warning]/70"></div>
+          <Card className="bg-gradient-to-br from-[--color-status-warning]/15 to-[--color-status-warning]/15 shadow-xl border border-[--color-status-warning]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-status-warning] to-[--color-status-warning]/70"></div>
             <CardContent className="p-6 pt-8 relative">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[--color-status-warning] mb-1">Pending</p>
-                  <p className="text-3xl font-bold text-[--color-status-warning]">5</p>
+                  <p className="text-sm font-medium text-[--color-status-warning] mb-2">Pending</p>
+                  <p className="text-4xl font-bold text-[--color-status-warning]">5</p>
                 </div>
                 <div className="bg-white/90 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <svg
@@ -122,13 +120,13 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-linear-to-br from-[--color-status-error]/15 to-[--color-status-error]/15 shadow-xl border border-[--color-status-error]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-status-error] to-[--color-status-error]/70"></div>
+          <Card className="bg-gradient-to-br from-[--color-status-error]/15 to-[--color-status-error]/15 shadow-xl border border-[--color-status-error]/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-status-error] to-[--color-status-error]/70"></div>
             <CardContent className="p-6 pt-8 relative">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[--color-status-error] mb-1">Overdue</p>
-                  <p className="text-3xl font-bold text-[--color-status-error]">1</p>
+                  <p className="text-sm font-medium text-[--color-status-error] mb-2">Overdue</p>
+                  <p className="text-4xl font-bold text-[--color-status-error]">1</p>
                 </div>
                 <div className="bg-white/90 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <svg
@@ -152,16 +150,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[--color-primary]">
               Quick Actions
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <Button
               asChild
-              className="py-6 bg-linear-to-r from-[--color-primary] to-[--color-secondary] hover:from-[--color-primary]/80 hover:to-[--color-secondary]/80 text-white font-semibold shadow-xl transition-all duration-300 h-20 group relative overflow-hidden"
+              className="py-8 bg-gradient-to-r from-[--color-primary] to-[--color-secondary] hover:from-[--color-primary]/80 hover:to-[--color-secondary]/80 text-white font-semibold shadow-xl transition-all duration-300 h-24 group relative overflow-hidden"
             >
               <Link href="/todos" className="flex items-center justify-center z-10">
                 <div className="absolute inset-0 bg-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -185,7 +183,7 @@ export default function DashboardPage() {
             <Button
               asChild
               variant="outline"
-              className="py-6 border-2 border-[--color-secondary] text-[--color-secondary] font-semibold shadow-xl hover:bg-[--color-secondary]/20 transition-colors duration-300 h-20 group relative overflow-hidden"
+              className="py-8 border-2 border-[--color-secondary] text-[--color-secondary] font-semibold shadow-xl hover:bg-[--color-secondary]/20 transition-colors duration-300 h-24 group relative overflow-hidden"
             >
               <Link href="/todos?filter=important" className="flex items-center justify-center z-10">
                 <div className="absolute inset-0 bg-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -209,7 +207,7 @@ export default function DashboardPage() {
             <Button
               asChild
               variant="outline"
-              className="py-6 border-2 border-[--color-primary] text-[--color-primary] font-semibold shadow-xl hover:bg-[--color-primary]/20 transition-colors duration-300 h-20 group relative overflow-hidden"
+              className="py-8 border-2 border-[--color-primary] text-[--color-primary] font-semibold shadow-xl hover:bg-[--color-primary]/20 transition-colors duration-300 h-24 group relative overflow-hidden"
             >
               <Link href="/profile" className="flex items-center justify-center z-10">
                 <div className="absolute inset-0 bg-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -234,19 +232,19 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="space-y-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="space-y-10">
+          <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[--color-primary]">
               Recent Activity
             </h2>
           </div>
 
           <TasksProvider>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               {/* Add Task Card */}
-              <Card className="bg-linear-to-br from-[--color-primary]/10 to-[--color-secondary]/10 shadow-xl border border-[--color-primary]/30 h-full transition-all duration-500 hover:shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-primary] to-[--color-secondary]"></div>
-                <CardHeader className="pb-4 relative z-10">
+              <Card className="bg-gradient-to-br from-[--color-primary]/10 to-[--color-secondary]/10 shadow-xl border border-[--color-primary]/30 h-full transition-all duration-500 hover:shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-primary] to-[--color-secondary]"></div>
+                <CardHeader className="pb-6 relative z-10">
                   <CardTitle className="text-xl text-[--color-primary] flex items-center">
                     <div className="mr-3 p-2 bg-white/80 rounded-lg group-hover:scale-110 transition-transform duration-300">
                       <svg
@@ -273,9 +271,9 @@ export default function DashboardPage() {
               </Card>
 
               {/* Task List Card */}
-              <Card className="bg-linear-to-br from-[--color-secondary]/10 to-[--color-primary]/10 shadow-xl border border-[--color-secondary]/30 h-full transition-all duration-500 hover:shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[--color-secondary] to-[--color-primary]"></div>
-                <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">
+              <Card className="bg-gradient-to-br from-[--color-secondary]/10 to-[--color-primary]/10 shadow-xl border border-[--color-secondary]/30 h-full transition-all duration-500 hover:shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[--color-secondary] to-[--color-primary]"></div>
+                <CardHeader className="flex flex-row items-center justify-between pb-6 relative z-10">
                   <CardTitle className="text-xl text-[--color-secondary] flex items-center">
                     <div className="mr-3 p-2 bg-white/80 rounded-lg group-hover:scale-110 transition-transform duration-300">
                       <svg

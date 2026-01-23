@@ -106,7 +106,7 @@ const TodosContent = () => {
 
       {/* Enhanced Filters Section */}
       <Card className={styles.filtersCard}>
-        <div className="p-6">
+        <div className="p-8">
           <div className={styles.filtersHeader}>
             <div className={styles.filtersTitleSection}>
               <Filter size={20} className={styles.filterIcon} />
