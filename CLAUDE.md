@@ -208,3 +208,10 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- TypeScript/JavaScript for Next.js 16.1.2 + Next.js (App Router), Better-Auth, bcryptjs, jsonwebtoken, zod (001-better-auth-integration)
+- NeonDB PostgreSQL accessed via environment DATABASE_URL (001-better-auth-integration)
+
+## Recent Changes
+- 001-better-auth-integration: Added TypeScript/JavaScript for Next.js 16.1.2 + Next.js (App Router), Better-Auth, bcryptjs, jsonwebtoken, zod
