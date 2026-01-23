@@ -9,6 +9,7 @@ class User(SQLModel, table=True):
 
     email: str = Field(default=None, primary_key=True)
     username: str = Field(default=None)
+    password: str = Field(default=None)  # Add password field
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
 

@@ -26,9 +26,9 @@ Initialize Better-Auth configuration and validate setup
 
 ### Tasks
 
-- [ ] T001 Initialize Better-Auth configuration in /frontend
-- [ ] T002 Generate Better-Auth config files in /frontend
-- [ ] T003 Validate Better-Auth setup in /frontend
+- [X] T001 Initialize Better-Auth configuration in /frontend
+- [X] T002 Generate Better-Auth config files in /frontend
+- [X] T003 Validate Better-Auth setup in /frontend
 
 ---
 
@@ -43,7 +43,7 @@ Prepare database schema with password column for user authentication
 
 ### Tasks
 
-- [ ] T004 Add password column to users table in Neon PostgreSQL database
+- [X] T004 Add password column to users table in Neon PostgreSQL database
 
 ---
 
@@ -65,12 +65,12 @@ Implement signup API route with validation, password hashing, database storage, 
 
 ### Tasks
 
-- [ ] T005 [US1] Create signup API route at /frontend/app/api/auth/signup
-- [ ] T006 [US1] Implement zod validation for signup input {email, username, password} in /frontend/app/api/auth/signup
-- [ ] T007 [US1] Hash password with bcryptjs in signup API
-- [ ] T008 [US1] Store user in database with hashed password in signup API
-- [ ] T009 [US1] Redirect user to login page after successful signup
-- [ ] T010 [US1] Check for duplicate email and return 409 Conflict when exists
+- [X] T005 [US1] Create signup API route at /frontend/app/api/auth/signup
+- [X] T006 [US1] Implement zod validation for signup input {email, username, password} in /frontend/app/api/auth/signup
+- [X] T007 [US1] Hash password with bcryptjs in signup API
+- [X] T008 [US1] Store user in database with hashed password in signup API
+- [X] T009 [US1] Redirect user to login page after successful signup
+- [X] T010 [US1] Check for duplicate email and return 409 Conflict when exists
 
 ---
 
@@ -92,12 +92,12 @@ Implement login API route with validation, password comparison, JWT token issuan
 
 ### Tasks
 
-- [ ] T011 [US2] Create login API route at /frontend/app/api/auth/login
-- [ ] T012 [US2] Implement zod validation for login input {email, password} in /frontend/app/api/auth/login
-- [ ] T013 [US2] Compare password using bcryptjs in login API
-- [ ] T014 [US2] Issue JWT token using jsonwebtoken in login API
-- [ ] T015 [US2] Store JWT in HTTP-only cookie with httpOnly=true, secure=true, sameSite='lax', path='/' in login API
-- [ ] T016 [US2] Redirect user to todos page after successful login
+- [X] T011 [US2] Create login API route at /frontend/app/api/auth/login
+- [X] T012 [US2] Implement zod validation for login input {email, password} in /frontend/app/api/auth/login
+- [X] T013 [US2] Compare password using bcryptjs in login API
+- [X] T014 [US2] Issue JWT token using jsonwebtoken in login API
+- [X] T015 [US2] Store JWT in HTTP-only cookie with httpOnly=true, secure=true, sameSite='lax', path='/' in login API
+- [X] T016 [US2] Redirect user to todos page after successful login
 
 ---
 
@@ -114,8 +114,8 @@ Implement comprehensive input validation and error handling for auth routes
 
 ### Tasks
 
-- [ ] T017 Add error handling for signup route in /frontend/app/api/auth/signup
-- [ ] T018 Add error handling for login route in /frontend/app/api/auth/login
+- [X] T017 Add error handling for signup route in /frontend/app/api/auth/signup
+- [X] T018 Add error handling for login route in /frontend/app/api/auth/login
 
 ---
 
@@ -132,8 +132,8 @@ Implement JWT validation on protected routes and proper redirect behavior
 
 ### Tasks
 
-- [ ] T019 Validate JWT on protected routes by reading from cookie and verifying
-- [ ] T020 Redirect unauthenticated users to login page on protected routes
+- [X] T019 Validate JWT on protected routes by reading from cookie and verifying
+- [X] T020 Redirect unauthenticated users to login page on protected routes
 
 ---
 
@@ -152,13 +152,13 @@ Test and verify all authentication flows work correctly
 
 ### Tasks
 
-- [ ] T021 Test signup flow using /ba:test-auth
-- [ ] T022 Test login flow using /ba:test-auth
-- [ ] T023 Verify JWT issuance and cookie setting with proper attributes
-- [ ] T024 Test redirect behavior after signup and login
-- [ ] T025 Verify JWT validation on protected routes
-- [ ] T026 Troubleshoot any authentication issues using /ba:troubleshoot
-- [ ] T027 Verify database entries for users
+- [X] T021 Test signup flow using /ba:test-auth
+- [X] T022 Test login flow using /ba:test-auth
+- [X] T023 Verify JWT issuance and cookie setting with proper attributes
+- [X] T024 Test redirect behavior after signup and login
+- [X] T025 Verify JWT validation on protected routes
+- [X] T026 Troubleshoot any authentication issues using /ba:troubleshoot
+- [X] T027 Verify database entries for users
 
 ---
 
