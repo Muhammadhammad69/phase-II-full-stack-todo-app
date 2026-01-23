@@ -62,9 +62,10 @@ frontend/
 │   │   └── page.tsx     # Existing signup page
 │   └── todos/
 │       └── page.tsx     # Destination after login
+├── middleware/
+│   └── auth.ts          # Authentication middleware for protected routes
 ├── lib/
 │   ├── auth/
-│   │   ├── validators.ts  # Zod validation schemas
 │   │   ├── jwt.ts         # JWT utility functions
 │   │   └── password.ts    # Password hashing utilities
 │   └── db/
@@ -73,7 +74,7 @@ frontend/
     └── auth.ts            # Authentication-related types
 ```
 
-**Structure Decision**: Following the web application pattern with all authentication implementation contained within the `/frontend` directory. API routes will be placed at `/frontend/app/api/auth` as per Next.js App Router conventions.
+**Structure Decision**: Following the web application pattern with all authentication implementation contained within the `/frontend` directory. API routes will be placed at `/frontend/app/api/auth` as per Next.js App Router conventions. Validation will be implemented inline within API route handlers using Zod schemas rather than separate validator files. Authentication middleware will be added to validate JWT tokens on protected routes.
 
 ## Complexity Tracking
 

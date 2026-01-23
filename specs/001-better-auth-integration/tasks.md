@@ -9,7 +9,8 @@ This document breaks down the Better-Auth login/signup implementation into atomi
 - **Phase 3**: Signup API implementation
 - **Phase 4**: Login API implementation
 - **Phase 5**: Validation & Error handling
-- **Phase 6**: Testing & verification
+- **Phase 6**: Protected route validation & redirects
+- **Phase 7**: Testing & verification
 
 ---
 
@@ -49,31 +50,34 @@ Prepare database schema with password column for user authentication
 ## Phase 3 — Signup API Implementation
 
 ### Goal
-Implement signup API route with validation, password hashing, and database storage
+Implement signup API route with validation, password hashing, database storage, and redirect
 
 ### User Story
-[US1] As a new user, I want to create an account with email and password so that I can access the application
+[US1] As a new user, I want to create an account with email, username, and password so that I can access the application
 
 ### Independent Test Criteria
-- Signup API accepts email and password
+- Signup API accepts email, username, and password
 - Password is validated and hashed using bcryptjs
 - User is stored in database with hashed password
 - Zod validation rejects invalid inputs
 - Redirects to login page on success
+- Returns appropriate error when email already exists
 
 ### Tasks
 
 - [ ] T005 [US1] Create signup API route at /frontend/app/api/auth/signup
-- [ ] T006 [US1] Implement zod validation for signup input in /frontend/app/api/auth/signup
+- [ ] T006 [US1] Implement zod validation for signup input {email, username, password} in /frontend/app/api/auth/signup
 - [ ] T007 [US1] Hash password with bcryptjs in signup API
 - [ ] T008 [US1] Store user in database with hashed password in signup API
+- [ ] T009 [US1] Redirect user to login page after successful signup
+- [ ] T010 [US1] Check for duplicate email and return 409 Conflict when exists
 
 ---
 
 ## Phase 4 — Login API Implementation
 
 ### Goal
-Implement login API route with validation, password comparison, and JWT token issuance
+Implement login API route with validation, password comparison, JWT token issuance, and redirect
 
 ### User Story
 [US2] As an existing user, I want to log in with my email and password so that I can access my account
@@ -82,16 +86,18 @@ Implement login API route with validation, password comparison, and JWT token is
 - Login API validates email and password with zod
 - Password comparison works using bcryptjs
 - JWT token is issued using jsonwebtoken
-- JWT is stored in HTTP-only cookie
+- JWT is stored in HTTP-only cookie with httpOnly=true, secure=true, sameSite='lax', path='/'
 - Token payload contains user id and email
+- Redirects to todos page on success
 
 ### Tasks
 
-- [ ] T009 [US2] Create login API route at /frontend/app/api/auth/login
-- [ ] T010 [US2] Implement zod validation for login input in /frontend/app/api/auth/login
-- [ ] T011 [US2] Compare password using bcryptjs in login API
-- [ ] T012 [US2] Issue JWT token using jsonwebtoken in login API
-- [ ] T013 [US2] Store JWT in HTTP-only cookie in login API
+- [ ] T011 [US2] Create login API route at /frontend/app/api/auth/login
+- [ ] T012 [US2] Implement zod validation for login input {email, password} in /frontend/app/api/auth/login
+- [ ] T013 [US2] Compare password using bcryptjs in login API
+- [ ] T014 [US2] Issue JWT token using jsonwebtoken in login API
+- [ ] T015 [US2] Store JWT in HTTP-only cookie with httpOnly=true, secure=true, sameSite='lax', path='/' in login API
+- [ ] T016 [US2] Redirect user to todos page after successful login
 
 ---
 
@@ -102,21 +108,36 @@ Implement comprehensive input validation and error handling for auth routes
 
 ### Independent Test Criteria
 - Invalid signup/login requests are rejected with proper messages
-- Duplicate email prevention works
-- Safe error messages are returned
+- Safe error messages are returned (generic to prevent user enumeration)
 - All validation follows zod schemas
+- Proper error status codes are returned
 
 ### Tasks
 
-- [ ] T014 Implement zod validation for signup in /frontend/app/api/auth/signup
-- [ ] T015 Implement zod validation for login in /frontend/app/api/auth/login
-- [ ] T016 Add error handling for signup route in /frontend/app/api/auth/signup
-- [ ] T017 Add error handling for login route in /frontend/app/api/auth/login
-- [ ] T018 Prevent duplicate emails in signup process
+- [ ] T017 Add error handling for signup route in /frontend/app/api/auth/signup
+- [ ] T018 Add error handling for login route in /frontend/app/api/auth/login
 
 ---
 
-## Phase 6 — Testing & Verification
+## Phase 6 — Protected Route Validation & Redirects
+
+### Goal
+Implement JWT validation on protected routes and proper redirect behavior
+
+### Independent Test Criteria
+- JWT tokens are validated on protected routes
+- Unauthenticated users are redirected to login page
+- Valid JWT tokens grant access to protected resources
+- Expired/invalid tokens deny access
+
+### Tasks
+
+- [ ] T019 Validate JWT on protected routes by reading from cookie and verifying
+- [ ] T020 Redirect unauthenticated users to login page on protected routes
+
+---
+
+## Phase 7 — Testing & Verification
 
 ### Goal
 Test and verify all authentication flows work correctly
@@ -126,15 +147,18 @@ Test and verify all authentication flows work correctly
 - Database entries are correct
 - JWT is properly stored in cookie
 - All auth flows are functional
+- Redirect behavior works correctly
 - Any issues are troubleshooted and resolved
 
 ### Tasks
 
-- [ ] T019 Test signup flow using /ba:test-auth
-- [ ] T020 Test login flow using /ba:test-auth
-- [ ] T021 Verify JWT issuance and cookie setting
-- [ ] T022 Troubleshoot any authentication issues using /ba:troubleshoot
-- [ ] T023 Verify database entries for users
+- [ ] T021 Test signup flow using /ba:test-auth
+- [ ] T022 Test login flow using /ba:test-auth
+- [ ] T023 Verify JWT issuance and cookie setting with proper attributes
+- [ ] T024 Test redirect behavior after signup and login
+- [ ] T025 Verify JWT validation on protected routes
+- [ ] T026 Troubleshoot any authentication issues using /ba:troubleshoot
+- [ ] T027 Verify database entries for users
 
 ---
 
@@ -143,16 +167,19 @@ Test and verify all authentication flows work correctly
 - Phase 2 must complete before Phases 3 and 4
 - Phases 3 and 4 can run in parallel
 - Phase 5 depends on completion of Phases 3 and 4
-- Phase 6 depends on completion of Phase 5
+- Phase 6 depends on completion of Phase 4
+- Phase 7 depends on completion of Phases 3, 4, 5, and 6
 
 ## Parallel Opportunities
 - [P] Tasks T001-T003 in Phase 1 can run sequentially as setup
-- [P] Tasks T009-T013 in Phase 4 can run in parallel with Tasks T005-T008 in Phase 3
-- [P] Tasks T014-T018 in Phase 5 can be parallelized
-- [P] Tasks T019-T023 in Phase 6 can run in parallel after dependencies are met
+- [P] Tasks T011-T016 in Phase 4 can run in parallel with Tasks T005-T010 in Phase 3
+- [P] Tasks T017-T018 in Phase 5 can run in parallel after Phases 3 and 4 complete
+- [P] Tasks T019-T020 in Phase 6 can run in parallel after Phase 4 completes
+- [P] Tasks T021-T027 in Phase 7 can run in parallel after dependencies are met
 
 ## Implementation Strategy
 1. Start with MVP (just basic signup/login functionality)
 2. Add validation and error handling
-3. Complete testing and verification
-4. Deliver incrementally with each phase being independently testable
+3. Implement JWT validation on protected routes
+4. Complete testing and verification
+5. Deliver incrementally with each phase being independently testable
