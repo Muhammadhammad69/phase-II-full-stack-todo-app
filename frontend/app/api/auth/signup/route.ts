@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createUser } from '../../../../lib/db/users';
+import { initializeDatabase } from '../../../../lib/db/init';
+import { ensureConnection } from '../../../../lib/db/connection';
 import { comparePassword } from '../../../../lib/auth/password';
 
 // Zod validation schema for signup input
@@ -15,8 +17,25 @@ const signupSchema = z.object({
     }),
 });
 
+let dbInitialized = false;
+
 export async function POST(request: NextRequest) {
   try {
+    // Initialize database if not already done
+    if (!dbInitialized) {
+      await initializeDatabase();
+      dbInitialized = true;
+    }
+
+    // Check database connection
+    const isConnected = await ensureConnection();
+    if (!isConnected) {
+      return Response.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+
     // Parse and validate the request body
     const body = await request.json();
 
@@ -44,15 +63,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create response and redirect to login page
-    const response = new NextResponse(null, {
-      status: 302,
-      headers: {
-        Location: '/login', // Redirect to login page after successful signup
+    // Return success response
+    return Response.json(
+      {
+        success: true,
+        message: 'User created successfully',
+        user: { email: createdUser.email, username: createdUser.username }
       },
-    });
-
-    return response;
+      { status: 201 }
+    );
 
   } catch (error: any) {
     console.error('Signup error:', error);

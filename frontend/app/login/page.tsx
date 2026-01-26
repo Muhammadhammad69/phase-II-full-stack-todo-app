@@ -33,9 +33,8 @@ export default function LoginPage() {
         // Redirect to dashboard
         router.push('/dashboard');
         router.refresh(); // Refresh to update header state
-      } else {
-        setError('Invalid email or password. Please use hammad@gmail.com / hammad123');
       }
+      // Error is handled by the AuthContext setError function
     } catch (err) {
       setError('An error occurred during login. Please try again.');
     }

@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { findUserByEmail, updateUserLastLogin } from '../../../../lib/db/users';
+import { initializeDatabase } from '../../../../lib/db/init';
+import { ensureConnection } from '../../../../lib/db/connection';
 import { comparePassword } from '../../../../lib/auth/password';
 import { signToken } from '../../../../lib/auth/jwt';
 
@@ -11,8 +13,25 @@ const loginSchema = z.object({
   password: z.string().min(1, { message: 'Password is required' }),
 });
 
+let dbInitialized = false;
+
 export async function POST(request: NextRequest) {
   try {
+    // Initialize database if not already done
+    if (!dbInitialized) {
+      await initializeDatabase();
+      dbInitialized = true;
+    }
+
+    // Check database connection
+    const isConnected = await ensureConnection();
+    if (!isConnected) {
+      return Response.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+
     // Parse and validate the request body
     const body = await request.json();
 
@@ -63,14 +82,19 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const tokenPayload = {
-      id: user.id || email, // Use email as ID if no ID exists
+      id: user.id, // UUID of the user
       email: user.email,
     };
 
     const token = signToken(tokenPayload);
 
     // Create response with JWT in HTTP-only cookie and redirect to todos page
-    const response = NextResponse.redirect(new URL('/todos', request.url));
+    // const response = NextResponse.redirect(new URL('/todos', request.url));
+    const response = NextResponse.json({
+      success: true,
+      message: 'Login successful',
+      status: 200
+    }, { status: 200 });
 
     // Set the JWT in an HTTP-only cookie with security settings
     response.cookies.set('auth_token', token, {

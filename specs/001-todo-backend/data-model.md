@@ -6,8 +6,10 @@
 **Purpose**: Represents an authenticated user in the system
 
 **Fields**:
-- `email`: String (Primary Key) - Unique identifier for the user
+- `id`: UUID - Secondary unique identifier for the user
+- `email`: String (Primary Key) - Unique email address of the user
 - `username`: String - Display name for the user
+- `password`: String - Hashed password for authentication
 - `created_at`: DateTime - Timestamp when user was registered
 - `updated_at`: DateTime - Timestamp when user record was last updated
 
@@ -53,8 +55,10 @@
 ```sql
 -- Users table
 CREATE TABLE users (
-    email VARCHAR(255) PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
+    id UUID DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) PRIMARY KEY NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

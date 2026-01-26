@@ -18,6 +18,6 @@ export interface LoginData {
 }
 
 export interface JWTPayload {
-  id: string;
+  id: string;  // UUID of the user
   email: string;
 }

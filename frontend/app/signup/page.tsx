@@ -49,9 +49,8 @@ export default function SignupPage() {
         // Redirect to dashboard
         router.push('/dashboard');
         router.refresh(); // Refresh to update header state
-      } else {
-        setError('An error occurred during signup. Please try again.');
       }
+      // Error is handled by the AuthContext setError function
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     }

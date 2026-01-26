@@ -1,12 +1,7 @@
 // frontend/lib/db/users.ts
-import { Pool } from 'pg';
 import { hashPassword } from '../auth/password';
 import { User } from '../../types/auth';
-
-// Initialize PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { pool } from './init';
 
 /**
  * Create a new user in the database
@@ -19,7 +14,7 @@ export const createUser = async (
   email: string,
   username: string,
   password: string
-): Promise<Pick<User, 'email' | 'username'> | null> => {
+): Promise<User | null> => {
   try {
     // Hash the password
     const hashedPassword = await hashPassword(password);
@@ -28,7 +23,7 @@ export const createUser = async (
     const query = `
       INSERT INTO users (email, username, password, created_at, updated_at)
       VALUES ($1, $2, $3, NOW(), NOW())
-      RETURNING email, username
+      RETURNING id, email, username
     `;
 
     const result = await pool.query(query, [email, username, hashedPassword]);
@@ -56,7 +51,7 @@ export const findUserByEmail = async (
   email: string
 ): Promise<User | null> => {
   try {
-    const query = 'SELECT email, username, password FROM users WHERE email = $1';
+    const query = 'SELECT id, email, username, password FROM users WHERE email = $1';
     const result = await pool.query(query, [email]);
 
     if (result.rows.length > 0) {
@@ -76,7 +71,7 @@ export const findUserByEmail = async (
  */
 export const updateUserLastLogin = async (email: string): Promise<void> => {
   try {
-    const query = 'UPDATE users SET updated_at = NOW() WHERE email = $1';
+    const query = 'UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE email = $1';
     await pool.query(query, [email]);
   } catch (error) {
     console.error('Error updating user login time:', error);

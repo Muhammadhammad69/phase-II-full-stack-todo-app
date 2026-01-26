@@ -11,6 +11,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
@@ -27,6 +28,7 @@ const DEFAULT_CREDENTIALS = {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if user is logged in on initial load
@@ -44,19 +46,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
+    setError('');
 
-    // Simulated authentication with hardcoded credentials
-    if (email === DEFAULT_CREDENTIALS.email && password === DEFAULT_CREDENTIALS.password) {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      const userData = { email, name: email.split('@')[0] }; // Extract name from email
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+      const data = await response.json();
 
-      setIsLoading(false);
-      return true;
-    } else {
+      if (response.ok) {
+        // Login successful
+        const userData = { email, name: email.split('@')[0] }; // Extract name from email
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        setIsLoading(false);
+        return true;
+      } else {
+        // Login failed - set error message
+        setError(data.error || 'Login failed. Please try again.');
+        setIsLoading(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Network error. Please try again.');
       setIsLoading(false);
       return false;
     }
@@ -64,18 +83,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
+    setError('');
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, username: name, password }), // Use 'username' to match API schema
+      });
 
-    // For demo purposes, we'll treat signup as successful
-    // In a real app, you'd validate and create the user
-    const userData = { email, name };
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+      const data = await response.json();
 
-    setIsLoading(false);
-    return true;
+      if (response.ok) {
+        // Signup successful
+        const userData = { email, name };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        setIsLoading(false);
+        return true;
+      } else {
+        // Signup failed - set error message
+        setError(data.error || 'Signup failed. Please try again.');
+        setIsLoading(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      setError('Network error. Please try again.');
+      setIsLoading(false);
+      return false;
+    }
   };
 
   const logout = () => {
@@ -90,6 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     user,
     isAuthenticated: !!user,
     isLoading,
+    error,
     login,
     logout,
     signup
