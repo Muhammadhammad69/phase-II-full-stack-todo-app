@@ -1,6 +1,6 @@
 // frontend/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { success, z } from 'zod';
 import { findUserByEmail, updateUserLastLogin } from '../../../../lib/db/users';
 import { initializeDatabase } from '../../../../lib/db/init';
 import { ensureConnection } from '../../../../lib/db/connection';
@@ -26,9 +26,15 @@ export async function POST(request: NextRequest) {
     // Check database connection
     const isConnected = await ensureConnection();
     if (!isConnected) {
-      return Response.json(
-        { error: 'Database connection failed' },
-        { status: 500 }
+      return NextResponse.json(
+        { 
+          message: 'Database connection failed', 
+          success: false, 
+          status: 500 
+        },
+        { 
+          status: 500 
+        }
       );
     }
 
@@ -37,12 +43,14 @@ export async function POST(request: NextRequest) {
 
     const validationResult = loginSchema.safeParse(body);
     if (!validationResult.success) {
-      return Response.json(
+      return NextResponse.json(
         {
-          error: 'Validation failed',
-          details: validationResult.error.issues
+          message: 'Invalid data',
+          success: false
         },
-        { status: 400 }
+        { 
+          status: 400 
+        }
       );
     }
 
@@ -52,18 +60,28 @@ export async function POST(request: NextRequest) {
     const user = await findUserByEmail(email);
     if (!user) {
       // Return generic error to prevent user enumeration
-      return Response.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+      return NextResponse.json(
+        { 
+          message: 'Invalid email or password',
+          success: false
+        },
+        { 
+          status: 401 
+        }
       );
     }
 
     // Check if user.password exists before comparing
     if (!user.password) {
       // Return generic error to prevent user enumeration
-      return Response.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+      return NextResponse.json(
+        { 
+          message: 'Invalid email or password',
+          success: false
+        },
+        { 
+          status: 401 
+        }
       );
     }
 
@@ -71,9 +89,14 @@ export async function POST(request: NextRequest) {
     const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) {
       // Return generic error to prevent user enumeration
-      return Response.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+      return NextResponse.json(
+        { 
+          message: 'Invalid email or password',
+          success: false
+        },
+        { 
+          status: 401 
+        }
       );
     }
 
@@ -82,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const tokenPayload = {
-      id: user.id, // UUID of the user
+      id: user.id || "", // UUID of the user
       email: user.email,
     };
 
@@ -90,11 +113,15 @@ export async function POST(request: NextRequest) {
 
     // Create response with JWT in HTTP-only cookie and redirect to todos page
     // const response = NextResponse.redirect(new URL('/todos', request.url));
-    const response = NextResponse.json({
-      success: true,
-      message: 'Login successful',
-      status: 200
-    }, { status: 200 });
+    const response = NextResponse.json(
+      {
+        message: 'Login successful',
+        success: true
+      }, 
+      { 
+        status: 200 
+      }
+    );
 
     // Set the JWT in an HTTP-only cookie with security settings
     response.cookies.set('auth_token', token, {
@@ -111,9 +138,14 @@ export async function POST(request: NextRequest) {
     console.error('Login error:', error);
 
     // Return a generic error to prevent user enumeration
-    return Response.json(
-      { error: 'An error occurred during login' },
-      { status: 500 }
+    return NextResponse.json(
+      { 
+        message: 'An error occurred during login', 
+        success: false
+      },
+      { 
+        status: 500 
+      }
     );
   }
 }

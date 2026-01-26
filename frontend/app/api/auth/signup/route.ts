@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createUser } from '../../../../lib/db/users';
 import { initializeDatabase } from '../../../../lib/db/init';
 import { ensureConnection } from '../../../../lib/db/connection';
-import { comparePassword } from '../../../../lib/auth/password';
+
 
 // Zod validation schema for signup input
 const signupSchema = z.object({
@@ -30,8 +30,11 @@ export async function POST(request: NextRequest) {
     // Check database connection
     const isConnected = await ensureConnection();
     if (!isConnected) {
-      return Response.json(
-        { error: 'Database connection failed' },
+      return NextResponse.json(
+        { 
+          message: 'Database connection failed',
+          success: false
+        },
         { status: 500 }
       );
     }
@@ -41,12 +44,14 @@ export async function POST(request: NextRequest) {
 
     const validationResult = signupSchema.safeParse(body);
     if (!validationResult.success) {
-      return Response.json(
+      return NextResponse.json(
         {
-          error: 'Validation failed',
-          details: validationResult.error.issues
+          message: 'Invalid data',
+          success: false
         },
-        { status: 400 }
+        { 
+          status: 400 
+        }
       );
     }
 
@@ -57,29 +62,41 @@ export async function POST(request: NextRequest) {
 
     if (!createdUser) {
       // User already exists (caught by unique constraint)
-      return Response.json(
-        { error: 'Email already exists' },
-        { status: 409 }
+      return NextResponse.json(
+        { 
+          message: 'Email already exists',
+          success: false 
+        },
+        { 
+          status: 409 
+        }
       );
     }
 
     // Return success response
-    return Response.json(
+    return NextResponse.json(
       {
         success: true,
         message: 'User created successfully',
         user: { email: createdUser.email, username: createdUser.username }
       },
-      { status: 201 }
+      { 
+        status: 200 
+      }
     );
 
   } catch (error: any) {
     console.error('Signup error:', error);
 
     // Return a generic error to prevent user enumeration
-    return Response.json(
-      { error: 'An error occurred during signup' },
-      { status: 500 }
+    return NextResponse.json(
+      { 
+        message: 'An error occurred during signup',
+        success: false 
+      },
+      { 
+        status: 500 
+      }
     );
   }
 }
