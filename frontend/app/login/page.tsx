@@ -10,6 +10,10 @@ import { Label } from '@/components/ui/label';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -122,7 +126,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+              className="w-full py-3 rounded-lg bg-linear-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-[1.02]"
               disabled={isLoading}
             >
               {isLoading ? (

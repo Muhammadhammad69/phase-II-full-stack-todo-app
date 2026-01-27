@@ -68,13 +68,13 @@ const FeatureCard = ({
         className="h-full group hover:transform hover:scale-105 transition-all duration-300 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 hover:border-cyan-500/30"
       >
         <div className="p-8 flex flex-col items-center text-center h-full">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/25">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-linear-to-r from-blue-600 to-cyan-600 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/25">
             {icon}
           </div>
-          <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold mb-4 bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             {title}
           </h3>
-          <p className="text-slate-300 group-hover:text-white transition-colors duration-300 flex-grow text-lg">
+          <p className="text-slate-300 group-hover:text-white transition-colors duration-300 grow text-lg">
             {description}
           </p>
         </div>
@@ -158,13 +158,13 @@ export default function HomePage() {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
+  console.log("HomePage rendered. isAuthenticated:", isAuthenticated);
   if (isAuthenticated) {
     return <AuthenticatedHomeContent />;
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
       <AnimatedBackground />
 
       {/* Subtle particle effect */}
@@ -207,13 +207,13 @@ export default function HomePage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight tracking-tight">
-                  <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
+                  <span className="bg-linear-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
                     Tech Innovation
                   </span>
                   <br />
                   <span className="text-white">Todo</span>
                 </h1>
-                <div className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                <div className="absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center animate-pulse">
                   <span className="text-white text-xl sm:text-2xl">⚡</span>
                 </div>
               </motion.div>
@@ -289,7 +289,7 @@ export default function HomePage() {
                 <Button
                   variant="default"
                   size="lg"
-                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60"
+                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60"
                 >
                   Sign In to Your Account
                 </Button>
@@ -309,7 +309,7 @@ export default function HomePage() {
       </div>
 
       {/* Bottom gradient overlay */}
-      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-slate-900/90 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-full h-40 bg-linear-to-t from-slate-900/90 to-transparent pointer-events-none"></div>
     </div>
   );
 }

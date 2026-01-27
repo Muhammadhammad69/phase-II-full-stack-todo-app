@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
     };
 
-    const token = signToken(tokenPayload);
+    const token = await signToken(tokenPayload);
 
     // Create response with JWT in HTTP-only cookie and redirect to todos page
     // const response = NextResponse.redirect(new URL('/todos', request.url));

@@ -18,8 +18,8 @@ const Header: React.FC = () => {
     setIsMounted(true);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
   };
 
   const isActive = (path: string) => pathname === path;

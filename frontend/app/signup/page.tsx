@@ -47,7 +47,7 @@ export default function SignupPage() {
 
       if (success) {
         // Redirect to dashboard
-        router.push('/dashboard');
+        router.push('/login');
         router.refresh(); // Refresh to update header state
       }
       // Error is handled by the AuthContext setError function
@@ -59,7 +59,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-indigo-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-sky-50 to-indigo-50 p-4">
       <Card className="w-full max-w-md shadow-lg border border-gray-200">
         <CardHeader className="space-y-1 text-center pb-6">
           <div className="mx-auto mb-4">
@@ -189,7 +189,7 @@ export default function SignupPage() {
 
               <Button
                 type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+                className="w-full py-3 rounded-lg bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-[1.02]"
                 disabled={isLoading}
               >
                 {isLoading ? (

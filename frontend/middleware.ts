@@ -5,7 +5,7 @@ import { authenticateRequest, redirectToLogin } from './middleware/auth';
 // Define protected routes
 const protectedRoutes = ['/todos', '/dashboard', '/profile'];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Check if the current path is a protected route
   const isProtectedRoute = protectedRoutes.some(route =>
     request.nextUrl.pathname.startsWith(route)
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
 
   if (isProtectedRoute) {
     // If it's a protected route, check if user is authenticated
-    const isAuthenticated = authenticateRequest(request);
+    const isAuthenticated = await authenticateRequest(request);
 
     if (!isAuthenticated) {
       // Redirect to login if not authenticated
