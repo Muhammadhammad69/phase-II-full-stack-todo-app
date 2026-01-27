@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,41 +10,83 @@ import { Label } from '@/components/ui/label';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "react-hot-toast";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 
+const formSchema = z.object({
+  email: z.email("Please enter a valid email address"),
+  password: z.string().min(3, "Password is required. At least 3 characters."),
+});
+
+type LoginFormValues = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
   const router = useRouter();
   const theme = useTheme();
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (values: LoginFormValues) => {
     try {
-      const success = await login(email, password);
+      const response = await login(values.email, values.password);
 
-      if (success) {
+      if (response.success) {
+        toast.success(response.message || 'Login successful!');
         // Redirect to dashboard
         router.push('/dashboard');
         router.refresh(); // Refresh to update header state
+      }else{
+        toast.error(response.message || 'Login failed. Please try again.');
       }
-      // Error is handled by the AuthContext setError function
     } catch (err) {
-      setError('An error occurred during login. Please try again.');
+      toast.error('An error occurred during login. Please try again.');
     }
-
-    setIsLoading(false);
   };
+
+  // Define Field-like components inline
+  // const Field = ({ children, 'data-invalid': dataInvalid, className }: {
+  //   children: React.ReactNode;
+  //   'data-invalid'?: boolean;
+  //   className?: string;
+  // }) => (
+  //   <div className={`${className || ''} ${dataInvalid ? 'invalid' : ''}`}>
+  //     {children}
+  //   </div>
+  // );
+
+  // const FieldLabel = ({ children, htmlFor, className }: {
+  //   children: React.ReactNode;
+  //   htmlFor: string;
+  //   className?: string;
+  // }) => (
+  //   <Label htmlFor={htmlFor} className={`text-sm font-medium text-slate-700 ${className}`}>
+  //     {children}
+  //   </Label>
+  // );
+
+  // const FieldError = ({ children }: { children: React.ReactNode }) => (
+  //   <p className="mt-1 text-sm text-red-600">{children}</p>
+  // );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-sky-50 to-indigo-50 p-4">
@@ -66,52 +108,62 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-200">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-3">
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-sm font-medium text-slate-700">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-email">
+                      Email
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="login-email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your email"
+                      type="email"
+                      className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-                  Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="login-password">
+                      Password
+                    </FieldLabel>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id="login-password"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Enter your password"
+                        type={showPassword ? "text" : "password"}
+                        className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
             </div>
 
             <div className="flex items-center justify-between text-sm">

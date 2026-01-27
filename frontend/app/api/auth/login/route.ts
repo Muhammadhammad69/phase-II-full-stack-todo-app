@@ -107,6 +107,7 @@ export async function POST(request: NextRequest) {
     const tokenPayload = {
       id: user.id || "", // UUID of the user
       email: user.email,
+      name: user.username || "" // Username of the user
     };
 
     const token = await signToken(tokenPayload);
@@ -115,7 +116,7 @@ export async function POST(request: NextRequest) {
     // const response = NextResponse.redirect(new URL('/todos', request.url));
     const response = NextResponse.json(
       {
-        message: 'Login successful',
+        message: 'Login successfully',
         success: true
       }, 
       { 

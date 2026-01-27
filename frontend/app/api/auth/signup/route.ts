@@ -8,13 +8,15 @@ import { ensureConnection } from '../../../../lib/db/connection';
 
 // Zod validation schema for signup input
 const signupSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
+  email: z.email({ message: 'Invalid email address' }),
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
-  password: z.string()
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])/, {
-      message: 'Password must contain at least one uppercase and one lowercase letter'
-    }),
+ password: z
+  .string()
+  .min(8, "Password must be at least 8 characters long")
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  ),
 });
 
 let dbInitialized = false;
@@ -77,8 +79,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: 'User created successfully',
-        user: { email: createdUser.email, username: createdUser.username }
+        message: 'Account created successfully! Please log in.'
       },
       { 
         status: 200 

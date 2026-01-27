@@ -6,15 +6,19 @@ interface User {
   email: string;
   name?: string;
 }
+interface ApiResponse {
+  message: string;
+  success: boolean;
+}
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<ApiResponse>;
   logout: () => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  signup: (name: string, email: string, password: string) => Promise<ApiResponse>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,10 +68,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     checkAuthStatus();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<ApiResponse> => {
     setIsLoading(true);
     setError('');
-
+    let data: ApiResponse = { message: 'Login failed! Please try again later.', success: false };
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -77,8 +81,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
+      data = await response.json();
+      console.log("response from login api", data);
       if (response.ok) {
         // Login successful
         const userData = { email, name: email.split('@')[0] }; // Extract name from email
@@ -86,25 +90,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('user', JSON.stringify(userData));
 
         setIsLoading(false);
-        return true;
+        
       } else {
         // Login failed - set error message
-        setError(data.error || 'Login failed. Please try again.');
+        setError('Login failed. Please try again.');
         setIsLoading(false);
-        return false;
+        
       }
     } catch (error) {
       console.error('Login error:', error);
       setError('Network error. Please try again.');
       setIsLoading(false);
-      return false;
+      
+    } finally {
+      return data;
     }
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string): Promise<ApiResponse> => {
     setIsLoading(true);
     setError('');
-
+    let data: ApiResponse = { message: 'Signup failed! Please try again later.', success: false };
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -114,24 +120,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         body: JSON.stringify({ email, username: name, password }), // Use 'username' to match API schema
       });
 
-      const data = await response.json();
+      data = await response.json();
 
       if (response.ok) {
         // Signup successful - don't save user to localStorage on signup, only on login
         // The user will need to login after signup
         setIsLoading(false);
-        return true;
+        
       } else {
         // Signup failed - set error message
-        setError(data.error || 'Signup failed. Please try again.');
+        setError("Signup failed. Please try again.");
         setIsLoading(false);
-        return false;
+        
       }
     } catch (error) {
       console.error('Signup error:', error);
       setError('Network error. Please try again.');
       setIsLoading(false);
-      return false;
+      
+    }finally {
+      return data
     }
   };
 

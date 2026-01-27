@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@/theme/ThemeProvider';
 import { AuthProvider } from '@/components/auth/AuthContext';
 import Header from '@/components/layout/Header';
+import { Toaster } from "react-hot-toast";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -34,6 +35,7 @@ export default function RootLayout({
             <main>
               {children}
             </main>
+            <Toaster position="top-right" />
           </ThemeProvider>
         </AuthProvider>
       </body>

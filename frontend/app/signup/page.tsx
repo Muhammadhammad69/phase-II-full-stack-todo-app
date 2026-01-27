@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,53 +10,95 @@ import { Label } from '@/components/ui/label';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "react-hot-toast";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 3 characters"),
+  email: z.email("Please enter a valid email address"),
+  password: z
+  .string()
+  .min(8, "Password must be at least 8 characters long")
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  ),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+type SignupFormValues = z.infer<typeof formSchema>;
 
 export default function SignupPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const router = useRouter();
   const theme = useTheme();
   const { signup } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    // Validation
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
+  const isLoading = form.formState.isSubmitting;
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      setIsLoading(false);
-      return;
-    }
-
+  const onSubmit = async (values: SignupFormValues) => {
     try {
-      const success = await signup(name, email, password);
+      const response = await signup(values.name, values.email, values.password);
 
-      if (success) {
-        // Redirect to dashboard
+      if (response.success) {
+        toast.success(response.message||"Account created successfully! Please log in.");
+        // Redirect to login
         router.push('/login');
         router.refresh(); // Refresh to update header state
+      }else {
+        toast.error(response.message || 'Signup failed. Please try again later.');
       }
-      // Error is handled by the AuthContext setError function
     } catch (err) {
-      setError('An error occurred during signup. Please try again.');
+      toast.error('An error occurred during signup. Please try again.');
     }
-
-    setIsLoading(false);
   };
+
+  // Define Field-like components inline
+  // const Field = ({ children, 'data-invalid': dataInvalid, className }: {
+  //   children: React.ReactNode;
+  //   'data-invalid'?: boolean;
+  //   className?: string;
+  // }) => (
+  //   <div className={`${className || ''} ${dataInvalid ? 'invalid' : ''}`}>
+  //     {children}
+  //   </div>
+  // );
+
+  // const FieldLabel = ({ children, htmlFor, className }: {
+  //   children: React.ReactNode;
+  //   htmlFor: string;
+  //   className?: string;
+  // }) => (
+  //   <Label htmlFor={htmlFor} className={`text-sm font-medium text-slate-700 ${className}`}>
+  //     {children}
+  //   </Label>
+  // );
+
+  // const FieldError = ({ children }: { children: React.ReactNode }) => (
+  //   <p className="mt-1 text-sm text-red-600">{children}</p>
+  // );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-sky-50 to-indigo-50 p-4">
@@ -79,91 +121,117 @@ export default function SignupPage() {
         </CardHeader>
 
         <CardContent>
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-200">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-3">
-              <div className="space-y-1">
-                <Label htmlFor="name" className="text-sm font-medium text-slate-700">
-                  Full Name
-                </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-name">
+                      Full Name
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="signup-name"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your full name"
+                      type="text"
+                      className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-sm font-medium text-slate-700">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-email">
+                      Email
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="signup-email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your email"
+                      type="email"
+                      className="py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-                  Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Create a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-password">
+                      Password
+                    </FieldLabel>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id="signup-password"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Create a password"
+                        type={showPassword ? "text" : "password"}
+                        className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
-                  Confirm Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
+              <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-confirm-password">
+                      Confirm Password
+                    </FieldLabel>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id="signup-confirm-password"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Confirm your password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        className="py-3 px-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-700"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
             </div>
 
             <div className="space-y-3">
