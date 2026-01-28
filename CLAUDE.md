@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - TypeScript/JavaScript for Next.js 16.1.2 + Next.js (App Router), Better-Auth, bcryptjs, jsonwebtoken, zod (001-better-auth-integration)
 - NeonDB PostgreSQL accessed via environment DATABASE_URL (001-better-auth-integration)
+- TypeScript/JavaScript for frontend, Python 3.11 for backend + Next.js 16.12, Better-Auth, FastAPI, axios/fetch for API calls (001-frontend-backend-integration)
+- NeonDB PostgreSQL (via environment DATABASE_URL) (001-frontend-backend-integration)
 
 ## Recent Changes
 - 001-better-auth-integration: Added TypeScript/JavaScript for Next.js 16.1.2 + Next.js (App Router), Better-Auth, bcryptjs, jsonwebtoken, zod
