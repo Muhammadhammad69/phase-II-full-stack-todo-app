@@ -3,6 +3,9 @@ import { SignJWT, jwtVerify } from 'jose';
 interface JWTPayload {
   id: string;
   email: string;
+  name: string;
+  createdAt: string | null;
+  updatedAt?: string | null;
 }
 
 /**
@@ -17,7 +20,7 @@ export const signToken = async (payload: JWTPayload): Promise<string> => {
   const alg = process.env.JWT_ALGORITHM || 'HS256';
   const expiresIn = '7d'; // 7 days as specified in the requirements
 
-  return new SignJWT(payload)
+  return new SignJWT(payload as unknown as import('jose').JWTPayload)
     .setProtectedHeader({ alg })
     .setIssuedAt()
     .setExpirationTime(expiresIn)
@@ -36,7 +39,7 @@ export const verifyToken = async (token: string): Promise<JWTPayload | null> => 
     );
 
     const verified = await jwtVerify(token, secret);
-    return verified.payload as JWTPayload;
+    return verified.payload as unknown as JWTPayload;
   } catch (error) {
     console.error('JWT verification error:', error);
     return null;

@@ -2,13 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-interface User {
-  email: string;
-  name?: string;
-}
+import { User } from '@/types/auth/auth';
 interface ApiResponse {
   message: string;
   success: boolean;
+  user?: User;
 }
 
 interface AuthContextType {
@@ -24,12 +22,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Default credentials as specified in requirements
-const DEFAULT_CREDENTIALS = {
-  email: 'hammad@gmail.com',
-  password: 'hammad123'
-};
+
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // const {setError: setTasksError} = useTasks();
+  // const [state, dispatch] = useReducer(tasksReducer, initialState);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
       }
     };
-
+    
     checkAuthStatus();
   }, []);
 
@@ -82,12 +79,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
 
       data = await response.json();
-      console.log("response from login api", data);
+      
       if (response.ok) {
         // Login successful
-        const userData = { email, name: email.split('@')[0] }; // Extract name from email
-        setUser(userData);
+     
+        const userData = data.user!; // Extract user data from response
         localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
 
         setIsLoading(false);
         
@@ -149,11 +147,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await fetch('/api/auth/logout', {
         method: 'POST',
       });
+      
       router.refresh();
     } catch (error) {
       console.error('Logout API error:', error);
     } finally {
       // Clear user data from context and localStorage
+      // setTasksError(null);
       setUser(null);
       localStorage.removeItem('user');
       localStorage.removeItem('isLoggedIn');
@@ -182,3 +182,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export { AuthContext };

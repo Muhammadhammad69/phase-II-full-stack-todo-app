@@ -1,6 +1,6 @@
 // frontend/lib/db/users.ts
 import { hashPassword } from '../auth/password';
-import { User } from '../../types/auth';
+import { User } from '@/types/auth/auth';
 import { pool } from './init';
 
 /**
@@ -33,6 +33,7 @@ export const createUser = async (
     }
 
     return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Check if the error is due to duplicate email
     if (error.code === '23505') { // PostgreSQL unique violation code
@@ -51,11 +52,21 @@ export const findUserByEmail = async (
   email: string
 ): Promise<User | null> => {
   try {
-    const query = 'SELECT id, email, username, password FROM users WHERE email = $1';
+    const query = 'SELECT id, email, username, password, created_at, updated_at FROM users WHERE email = $1';
     const result = await pool.query(query, [email]);
 
     if (result.rows.length > 0) {
-      return result.rows[0];
+      
+      const getUser = result.rows[0];
+      const user = {
+        id: getUser.id as string,
+        email: getUser.email as string,
+        name: getUser.username as string,
+        password: getUser.password as string,
+        createdAt: getUser.created_at ? getUser.created_at.toISOString() : null,
+        updatedAt: getUser.updated_at ? getUser.updated_at.toISOString() :   null,
+      }
+      return user;
     }
 
     return null;

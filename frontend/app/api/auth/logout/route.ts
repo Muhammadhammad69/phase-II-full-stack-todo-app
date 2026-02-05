@@ -1,7 +1,7 @@
 // frontend/app/api/auth/logout/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Create response
     const response = NextResponse.json({
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
 
     // Remove the auth_token cookie by setting it to expired
     response.cookies.set('auth_token', '', {
-      httpOnly: true,
+      httpOnly: false, // Match the login route setting
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Logout error:', error);
 
     return NextResponse.json(

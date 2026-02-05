@@ -5,7 +5,7 @@ import { verifyToken } from '../lib/auth/jwt';
 export const authenticateRequest = async (request: NextRequest): Promise<boolean> => {
   // Get the auth token from cookies
   const token = request.cookies.get('auth_token')?.value;
-  console.log("Authenticating request. Token found:", token);
+  
   if (!token) {
     return false;
   }
@@ -19,8 +19,16 @@ export const authenticateRequest = async (request: NextRequest): Promise<boolean
 export const redirectToLogin = (request: NextRequest): NextResponse => {
   // Redirect to login page
   const url = request.nextUrl.clone();
-  console.log("Redirecting to login from middleware", url);
+  
   url.pathname = '/login';
   url.search = `?return=${encodeURIComponent(request.nextUrl.pathname)}`;
   return NextResponse.redirect(url);
 };
+
+export const redirectToTodos = (request: NextRequest): NextResponse => {
+  // Redirect to todos page
+  const url = request.nextUrl.clone();
+  url.pathname = '/todos';
+  url.search = `?return=${encodeURIComponent(request.nextUrl.pathname)}`;
+  return NextResponse.redirect(url);
+}

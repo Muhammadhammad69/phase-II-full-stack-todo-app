@@ -17,6 +17,12 @@
   align-items: center;
 }
 
+.navContainer {
+  display: flex;
+  align-items: center;
+  /* gap: var(--spacing-md); */
+}
+
 .logo {
   text-decoration: none;
 }
@@ -95,7 +101,9 @@
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--border-radius-md);
   transition: all 0.2s ease;
+  cursor: pointer;
 }
+
 
 .logoutBtn:hover {
   background-color: var(--color-primary);
@@ -103,14 +111,65 @@
   transform: translateY(-1px);
 }
 
-/* Responsive design */
+/* Responsive design - hide navigation links when sidebar is available on lg screens */
+.hiddenOnSmall {
+  display: none;
+}
+
+.mobileMenuButton {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 @media (max-width: 1024px) {
   .container {
     padding: 0 var(--spacing-md);
   }
 
-  .navLinks {
-    gap: var(--spacing-sm);
+  .mobileMenuButton {
+    display: block !important;
+    margin-left: auto;
+    width: auto;
+    height: auto;
+    
+  }
+
+  .mobileMenuSheet {
+    width: 80vw;
+    max-width: 300px;
+    z-index: 999;
+    padding: 1rem;
+  }
+
+  .mobileMenuContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .mobileMenuHeader {
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .mobileNav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .mobileNavActions {
+    margin-top: auto;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
   }
 
   .navActions {
@@ -120,6 +179,14 @@
   .title {
     font-size: var(--font-size-lg);
   }
+  .navLinks{
+    align-items: normal;
+    flex-direction: column;
+    text-align: center;
+  }
+  .logoutBtn{
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -127,10 +194,6 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--spacing-md);
-  }
-
-  .navLinks {
-    gap: var(--spacing-xs);
   }
 
   .navActions {
@@ -150,10 +213,6 @@
 @media (max-width: 480px) {
   .container {
     padding: 0 var(--spacing-sm);
-  }
-
-  .navLinks {
-    display: none;
   }
 
   .unauthenticatedNav {

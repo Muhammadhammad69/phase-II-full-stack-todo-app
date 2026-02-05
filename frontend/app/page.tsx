@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useAuth } from "@/components/auth/AuthContext";
-import { TasksProvider } from "@/components/features/todo/TasksContext";
+import { useAuth } from "@/components/contexts/AuthContext";
 import LoggedInHomeView from "@/components/features/todo/LoggedInHomeView";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useTheme } from "@/theme/ThemeProvider";
 
+import { Spinner } from "@/components/ui/spinner";
 // Animated background component
 const AnimatedBackground = () => {
   return (
@@ -145,21 +144,29 @@ const CollaborationIcon = () => (
 );
 
 const AuthenticatedHomeContent = () => (
-  <TasksProvider>
+  
     <LoggedInHomeView />
-  </TasksProvider>
+  
 );
 
 export default function HomePage() {
-  const theme = useTheme();
-  const { isAuthenticated } = useAuth();
+ 
+  // const theme = useTheme();
+  const { user, isLoading } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  console.log("HomePage rendered. isAuthenticated:", isAuthenticated);
-  if (isAuthenticated) {
+  
+    if (isLoading) {
+    return (
+      <div className="relative min-h-screen overflow-hidden flex items-center justify-center  ">
+        <Spinner className="size-15 text-[#0ea5e9]"/>
+      </div>
+    )
+  }
+  if (user) {
     return <AuthenticatedHomeContent />;
   }
 
@@ -289,7 +296,7 @@ export default function HomePage() {
                 <Button
                   variant="default"
                   size="lg"
-                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60"
+                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 min-w-60 cursor-pointer"
                 >
                   Sign In to Your Account
                 </Button>
@@ -298,7 +305,7 @@ export default function HomePage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 hover:text-white transition-all duration-300 transform hover:-translate-y-1 min-w-60"
+                  className="px-12 sm:px-16 py-4 md:py-5 text-lg sm:text-xl font-semibold border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 hover:text-white transition-all duration-300 transform hover:-translate-y-1 min-w-60 cursor-pointer"
                 >
                   Create New Account
                 </Button>

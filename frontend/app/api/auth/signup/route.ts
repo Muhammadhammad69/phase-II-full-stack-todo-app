@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, username, password } = validationResult.data;
-    console.log("email", email);
+    
     // Attempt to create the user
     const createdUser = await createUser(email, username, password);
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Signup error:', error);
 
     // Return a generic error to prevent user enumeration

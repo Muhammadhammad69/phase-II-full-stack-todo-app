@@ -7,6 +7,7 @@ import { theme } from '@/theme/config';
  */
 export const getColor = (path: string): string | undefined => {
   const pathParts = path.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let result: any = theme.colors;
 
   for (const part of pathParts) {

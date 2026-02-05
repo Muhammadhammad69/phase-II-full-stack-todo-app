@@ -24,7 +24,7 @@ async def get_current_user(
     token = credentials.credentials
     # print("Token received in dependency:", token)
     user_email = extract_user_from_token(token)
-
+    print("user_email123", user_email)
     # Verify user exists in database
     statement = select(User).where(User.email == user_email)
     result = await session.execute(statement)

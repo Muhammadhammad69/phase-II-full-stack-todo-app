@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 import pytest
@@ -40,7 +40,7 @@ async def test_token_expired(test_client):
     """Test that expired tokens return appropriate error"""
     expired_payload = {
         "sub": "test@example.com",
-        "exp": datetime.utcnow() - timedelta(hours=1)  # Expired 1 hour ago
+        "exp": datetime.now(timezone.utc) - timedelta(hours=1)  # Expired 1 hour ago
     }
     expired_token = jwt.encode(
         expired_payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
@@ -63,7 +63,7 @@ async def test_unregistered_user(test_client):
     # Create a token for a user that doesn't exist in the database
     payload = {
         "sub": "nonexistent@example.com",  # This user doesn't exist
-        "exp": datetime.utcnow() + timedelta(hours=1)
+        "exp": datetime.now(timezone.utc) + timedelta(hours=1)
     }
     token = jwt.encode(
         payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm

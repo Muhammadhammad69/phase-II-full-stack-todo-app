@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Optional
 from uuid import UUID
 
@@ -11,6 +11,18 @@ from app.core.exceptions import TaskNotFoundException
 from app.db.database import get_session
 from app.models.task import PriorityEnum, Task
 from app.schemas.task import TaskCreate, TaskListResponse, TaskResponse, TaskUpdate
+
+
+def convert_datetime_for_db(dt: Optional[datetime]) -> Optional[datetime]:
+    """Convert timezone-aware datetime to naive datetime in UTC for database storage."""
+    if dt is None:
+        return None
+
+    if dt.tzinfo is not None:
+        # Convert to naive datetime by removing timezone info (assuming it's already UTC)
+        return dt.astimezone(timezone.utc).replace(tzinfo=None)
+
+    return dt
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -58,7 +70,7 @@ async def create_task(
         title=task_data.title,
         description=task_data.description,
         priority=task_data.priority,
-        due_date=task_data.due_date
+        due_date=convert_datetime_for_db(task_data.due_date)
     )
 
     session.add(task)
@@ -117,12 +129,12 @@ async def list_tasks(
 
     if date_from is not None:
         statement = statement.where(
-            Task.created_at >= datetime.combine(date_from, datetime.min.time())
+            Task.created_at >= datetime.combine(date_from, datetime.min.time()).replace(tzinfo=timezone.utc)
         )
 
     if date_to is not None:
         statement = statement.where(
-            Task.created_at <= datetime.combine(date_to, datetime.max.time())
+            Task.created_at <= datetime.combine(date_to, datetime.max.time()).replace(tzinfo=timezone.utc)
         )
 
     # Apply pagination
@@ -140,11 +152,11 @@ async def list_tasks(
         count_statement = count_statement.where(Task.priority == priority)
     if date_from is not None:
         count_statement = count_statement.where(
-            Task.created_at >= datetime.combine(date_from, datetime.min.time())
+            Task.created_at >= datetime.combine(date_from, datetime.min.time()).replace(tzinfo=timezone.utc)
         )
     if date_to is not None:
         count_statement = count_statement.where(
-            Task.created_at <= datetime.combine(date_to, datetime.max.time())
+            Task.created_at <= datetime.combine(date_to, datetime.max.time()).replace(tzinfo=timezone.utc)
         )
 
     total_count_result = await session.exec(count_statement)
@@ -249,10 +261,12 @@ async def update_task(
     # Update only the fields that were provided
     update_data = task_data.dict(exclude_unset=True)
     for field, value in update_data.items():
+        if field in ['due_date', 'completed_at'] and isinstance(value, datetime):
+            value = convert_datetime_for_db(value)
         setattr(task, field, value)
 
     # Update the updated_at timestamp
-    task.updated_at = datetime.utcnow()
+    task.updated_at = convert_datetime_for_db(datetime.now(timezone.utc))
 
     await session.commit()
     await session.refresh(task)
@@ -334,6 +348,8 @@ async def toggle_task_completion(
     Raises:
         TaskNotFoundException: If the task doesn't exist or doesn't belong to the user
     """
+    print("current_user in toggle_task_completion", current_user)
+    print("task_id in toggle_task_completion", task_id)
     statement = select(Task).where(Task.id == task_id, Task.user_email == current_user)
     result = await session.execute(statement)
     task = result.scalar_one_or_none()
@@ -346,12 +362,12 @@ async def toggle_task_completion(
 
     # Set completed_at timestamp if marking as completed, clear if marking as incomplete
     if task.is_completed:
-        task.completed_at = datetime.utcnow()
+        task.completed_at = convert_datetime_for_db(datetime.now(timezone.utc))
     else:
         task.completed_at = None
 
     # Update the updated_at timestamp
-    task.updated_at = datetime.utcnow()
+    task.updated_at = convert_datetime_for_db(datetime.now(timezone.utc))
 
     await session.commit()
     await session.refresh(task)

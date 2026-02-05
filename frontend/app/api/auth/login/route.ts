@@ -1,6 +1,6 @@
 // frontend/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { success, z } from 'zod';
+import {  z } from 'zod';
 import { findUserByEmail, updateUserLastLogin } from '../../../../lib/db/users';
 import { initializeDatabase } from '../../../../lib/db/init';
 import { ensureConnection } from '../../../../lib/db/connection';
@@ -14,6 +14,7 @@ const loginSchema = z.object({
 });
 
 let dbInitialized = false;
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -104,29 +105,34 @@ export async function POST(request: NextRequest) {
     await updateUserLastLogin(email);
 
     // Generate JWT token
-    const tokenPayload = {
+    const userPayload = {
       id: user.id || "", // UUID of the user
       email: user.email,
-      name: user.username || "" // Username of the user
+      name: user.name || "user", // Username of the user,
+      createdAt: user.createdAt ? user.createdAt : null,
+      updatedAt: user.updatedAt ? user.updatedAt : null,
     };
-
-    const token = await signToken(tokenPayload);
+    
+    const token = await signToken(userPayload);
 
     // Create response with JWT in HTTP-only cookie and redirect to todos page
     // const response = NextResponse.redirect(new URL('/todos', request.url));
     const response = NextResponse.json(
       {
         message: 'Login successfully',
-        success: true
-      }, 
-      { 
-        status: 200 
+        success: true,
+        user: userPayload
+      },
+      {
+        status: 200
       }
     );
 
-    // Set the JWT in an HTTP-only cookie with security settings
+    // Set the JWT in a cookie that can be accessed by both client and server
+    // Note: This means the token is accessible to client-side JavaScript, which is less secure than HttpOnly
+    // but necessary for client-side authentication checks
     response.cookies.set('auth_token', token, {
-      httpOnly: true,
+      httpOnly: true, 
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
@@ -135,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     return response;
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
 
     // Return a generic error to prevent user enumeration

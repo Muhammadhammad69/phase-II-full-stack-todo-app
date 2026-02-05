@@ -52,10 +52,10 @@ body {
   box-sizing: border-box;
 }
 
-a {
+/* a {
   color: inherit;
   text-decoration: none;
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   html {

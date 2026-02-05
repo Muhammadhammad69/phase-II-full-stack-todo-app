@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
@@ -10,6 +10,24 @@ class PriorityEnum(str, Enum):
     low = "low"
     medium = "medium"
     high = "high"
+
+
+def get_utc_now():
+    """Helper function to get current UTC time in a consistent way."""
+    # Return naive datetime in UTC for database compatibility
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+def convert_datetime_for_db(dt: Optional[datetime]) -> Optional[datetime]:
+    """Convert timezone-aware datetime to naive datetime in UTC for database storage."""
+    if dt is None:
+        return None
+
+    if dt.tzinfo is not None:
+        # Convert to naive datetime by removing timezone info (assuming it's already UTC)
+        return dt.astimezone(timezone.utc).replace(tzinfo=None)
+
+    return dt
 
 
 class Task(SQLModel, table=True):
@@ -23,8 +41,8 @@ class Task(SQLModel, table=True):
     is_completed: bool = Field(default=False)
     due_date: Optional[datetime] = Field(default=None)
     completed_at: Optional[datetime] = Field(default=None)
-    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
-    updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    created_at: Optional[datetime] = Field(default_factory=get_utc_now)
+    updated_at: Optional[datetime] = Field(default_factory=get_utc_now)
 
     # Relationship to User
     user: Optional["User"] = Relationship(back_populates="tasks")
