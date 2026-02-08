@@ -1,0 +1,535 @@
+openapi: 3.0.3
+info:
+  title: Todo App Backend API
+  description: Secure and scalable Todo App Backend API with JWT-based authentication
+  version: 1.0.0
+  contact:
+    name: Todo App Development Team
+    email: dev@todoapp.example.com
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.todoapp.example.com
+    description: Production server
+paths:
+  /api/v1/tasks:
+    post:
+      summary: Create a new task
+      description: Creates a new todo task for the authenticated user
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get user's tasks
+      description: Retrieves all tasks associated with the authenticated user
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: completed
+          in: query
+          description: Filter by completion status (true, false, or all)
+          required: false
+          schema:
+            type: string
+            enum: [true, false, all]
+        - name: priority
+          in: query
+          description: Filter by priority level
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high]
+        - name: page
+          in: query
+          description: Page number for pagination (default: 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page (default: 20)
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: due_date_start
+          in: query
+          description: Filter tasks with due date after this date (ISO format)
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: due_date_end
+          in: query
+          description: Filter tasks with due date before this date (ISO format)
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Successfully retrieved tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/tasks/{task_id}:
+    get:
+      summary: Get a specific task
+      description: Retrieves a specific task by its ID
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to retrieve
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or doesn't belong to user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update a task
+      description: Updates a specific task with provided fields (full update)
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to update
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or doesn't belong to user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a task
+      description: Permanently deletes a specific task
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or doesn't belong to user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/tasks/{task_id}/complete:
+    patch:
+      summary: Toggle task completion status
+      description: Toggles the completion status of a specific task
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to toggle completion status
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task completion status toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          description: Unauthorized - Invalid or expired JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or doesn't belong to user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the API
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token required for authentication. Include in request header as "Authorization: Bearer {token}"
+
+  schemas:
+    TaskCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the task
+          example: "Buy groceries"
+        description:
+          type: string
+          description: Description of the task
+          example: "Need to buy milk, bread, and eggs"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          description: Priority level of the task
+          default: medium
+          example: medium
+        due_date:
+          type: string
+          format: date-time
+          description: Due date for the task in ISO 8601 format
+          example: "2023-12-31T23:59:59Z"
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the task
+          example: "Buy groceries"
+        description:
+          type: string
+          description: Description of the task
+          example: "Need to buy milk, bread, and eggs"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          description: Priority level of the task
+          example: high
+        due_date:
+          type: string
+          format: date-time
+          description: Due date for the task in ISO 8601 format
+          example: "2023-12-31T23:59:59Z"
+
+    TaskResponse:
+      type: object
+      required:
+        - id
+        - user_email
+        - title
+        - is_completed
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the task
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        user_email:
+          type: string
+          format: email
+          description: Email of the task owner
+          example: "user@example.com"
+        title:
+          type: string
+          description: Title of the task
+          example: "Buy groceries"
+        description:
+          type: string
+          description: Description of the task
+          example: "Need to buy milk, bread, and eggs"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          description: Priority level of the task
+          example: medium
+        is_completed:
+          type: boolean
+          description: Completion status of the task
+          example: false
+        due_date:
+          type: string
+          format: date-time
+          description: Due date for the task in ISO 8601 format
+          example: "2023-12-31T23:59:59Z"
+        completed_at:
+          type: string
+          format: date-time
+          description: Timestamp when task was marked complete
+          example: "2023-12-30T10:30:00Z"
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp in ISO 8601 format
+          example: "2023-12-29T09:15:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp in ISO 8601 format
+          example: "2023-12-29T09:15:00Z"
+
+    TaskListResponse:
+      type: object
+      required:
+        - success
+        - data
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: true
+        data:
+          type: object
+          required:
+            - tasks
+            - total_count
+            - page
+            - page_size
+          properties:
+            tasks:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskResponse'
+            total_count:
+              type: integer
+              description: Total number of tasks matching the query
+              example: 25
+            page:
+              type: integer
+              description: Current page number
+              example: 1
+            page_size:
+              type: integer
+              description: Number of tasks per page
+              example: 20
+        message:
+          type: string
+          description: Human-readable message about the response
+          example: "Tasks retrieved successfully"
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable message about the response
+          example: "Task deleted successfully"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: "TASK_NOT_FOUND"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Task not found or doesn't belong to user"
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          description: Health status of the API
+          enum: [healthy, degraded, unhealthy]
+          example: healthy
+        timestamp:
+          type: string
+          format: date-time
+          description: Current timestamp
+          example: "2023-12-29T09:15:00Z"

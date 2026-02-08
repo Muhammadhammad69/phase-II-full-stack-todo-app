@@ -1,0 +1,19 @@
+# Environment variables
+.env.local
+.env.production
+.env.test
+
+# Local configuration files
+.claude/*.local.md
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db

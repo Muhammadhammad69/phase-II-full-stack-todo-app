@@ -1,0 +1,90 @@
+// frontend/lib/db/users.ts
+import { hashPassword } from '../auth/password';
+import { User } from '@/types/auth/auth';
+import { pool } from './init';
+
+/**
+ * Create a new user in the database
+ * @param email - User's email address
+ * @param username - User's username
+ * @param password - Plain text password (will be hashed)
+ * @returns Created user object or null if user already exists
+ */
+export const createUser = async (
+  email: string,
+  username: string,
+  password: string
+): Promise<User | null> => {
+  try {
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    // Insert the new user into the database
+    const query = `
+      INSERT INTO users (email, username, password, created_at, updated_at)
+      VALUES ($1, $2, $3, NOW(), NOW())
+      RETURNING id, email, username
+    `;
+
+    const result = await pool.query(query, [email, username, hashedPassword]);
+
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    }
+
+    return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // Check if the error is due to duplicate email
+    if (error.code === '23505') { // PostgreSQL unique violation code
+      return null;
+    }
+    throw error;
+  }
+};
+
+/**
+ * Find a user by email
+ * @param email - User's email address
+ * @returns User object or null if not found
+ */
+export const findUserByEmail = async (
+  email: string
+): Promise<User | null> => {
+  try {
+    const query = 'SELECT id, email, username, password, created_at, updated_at FROM users WHERE email = $1';
+    const result = await pool.query(query, [email]);
+
+    if (result.rows.length > 0) {
+      
+      const getUser = result.rows[0];
+      const user = {
+        id: getUser.id as string,
+        email: getUser.email as string,
+        name: getUser.username as string,
+        password: getUser.password as string,
+        createdAt: getUser.created_at ? getUser.created_at.toISOString() : null,
+        updatedAt: getUser.updated_at ? getUser.updated_at.toISOString() :   null,
+      }
+      return user;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Database query error:', error);
+    return null;
+  }
+};
+
+/**
+ * Update user's last login timestamp
+ * @param email - User's email address
+ */
+export const updateUserLastLogin = async (email: string): Promise<void> => {
+  try {
+    const query = 'UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE email = $1';
+    await pool.query(query, [email]);
+  } catch (error) {
+    console.error('Error updating user login time:', error);
+  }
+};

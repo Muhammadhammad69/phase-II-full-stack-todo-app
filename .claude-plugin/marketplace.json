@@ -1,0 +1,9 @@
+{
+  "name": "dev",
+  "owner": {"name": "Me"},
+  "plugins": [{
+    "name": "better-auth-plugin",
+    "source": "./plugins/better-auth-plugin",
+    "description": "A plugin that provides enhanced authentication features for secure access."
+  }]
+}
