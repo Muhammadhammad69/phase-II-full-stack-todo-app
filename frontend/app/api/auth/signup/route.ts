@@ -1,7 +1,7 @@
 // frontend/app/api/auth/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { createUser } from '../../../../lib/db/users';
+import { success, z } from 'zod';
+import { createUser, findUserByEmail } from '../../../../lib/db/users';
 import { initializeDatabase } from '../../../../lib/db/init';
 import { ensureConnection } from '../../../../lib/db/connection';
 
@@ -58,6 +58,20 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, username, password } = validationResult.data;
+
+
+    // const isUserExist = await findUserByEmail(email)
+    // if(isUserExist){
+    //   return NextResponse.json(
+    //     {
+    //       message: "Email already exists",
+    //       success: false
+    //     },
+    //     {
+    //       status: 409
+    //     }
+    //   )
+    // }
     
     // Attempt to create the user
     const createdUser = await createUser(email, username, password);
